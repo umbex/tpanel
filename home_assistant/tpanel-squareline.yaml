@@ -1,0 +1,66 @@
+################################
+# LILYGO T-PANEL S3 [with RS485], MCU: ESP32S3
+
+substitutions:
+  device_name: "tpanel_squareline"
+  friendly_name: "TPanel Squareline"
+
+esphome:
+  name: tpanel_studio
+  friendly_name: "$friendly_name"
+  comment: "Lilygo T-Panel S3 + Squareline challenge"
+  project:
+    name: "test.$device_name"
+    version: "0.0"  
+  platformio_options:
+    board_build.mcu: esp32s3
+    board_build.f_flash: 80000000L
+    board_build.memory_type: qio_qspi
+  libraries:
+    - "SPI"
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: arduino
+  
+
+psram:  # not sure these are necessary 
+  mode: octal
+  speed: 80MHz
+
+logger: 
+
+api:
+  encryption:
+    key: !secret api_password
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  id: wifi_id
+
+  ap:
+    ssid: "esphome $device_name"
+    password: !secret wifi_password
+
+captive_portal:
+
+external_components:
+  - source: 
+      type: local
+      path: "my_components"
+    components: [ tpanel ]
+
+# Configure our display component
+tpanel:
+  id: rgb_display
+  lambda: |-
+    // Access UI elements defined in SquareLine's ui.h
+    lv_label_set_text(ui_StatusMessage, "Connected to ESPHome!");
