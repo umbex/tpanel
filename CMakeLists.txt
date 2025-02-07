@@ -1,33 +1,30 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16)
 
-# Add library paths
-set(EXTRA_INCLUDE_DIRS
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/Arduino_GFX-1.4.6/src"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/lvgl-master"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/TouchLib/src"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/config"
+# Set component path
+set(COMPONENT_PATH ${CMAKE_CURRENT_LIST_DIR})
+
+# Include directories
+include_directories(
+    ${COMPONENT_PATH}/lib
+    ${COMPONENT_PATH}/lib/Arduino_GFX-1.4.6/src
+    ${COMPONENT_PATH}/lib/lvgl-master/src
+    ${COMPONENT_PATH}/lib/TouchLib/src
 )
 
-# Define source files for the component
-# Includes both our component code and the SquareLine generated UI files
+# Add source files
 set(COMPONENT_SRCS
-    "tpanel_display.cpp"      # Our ESPHome component implementation
-    "ui/ui.c"                 # SquareLine generated UI implementation
-    "ui/ui_helpers.c"         # SquareLine UI helper functions
+    "tpanel_display.cpp"
 )
 
-# Define required components/libraries
+# Set component requirements
 set(COMPONENT_REQUIRES
-    "esphome"                 # ESPHome core
-    "lvgl"                    # LVGL library
-    "Arduino_GFX_Library"     # Display driver library
-    "TouchLib"                # Touch interface library
+    "esphome"
+    "arduino"
 )
 
-# ESP-IDF component registration
-# This makes our component available to the ESP-IDF build system
+# Register component
 idf_component_register(
     SRCS ${COMPONENT_SRCS}
-    INCLUDE_DIRS "." "ui" ${EXTRA_INCLUDE_DIRS}
+    INCLUDE_DIRS "."
     REQUIRES ${COMPONENT_REQUIRES}
 ) 
